@@ -1,7 +1,7 @@
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const db = require("../database/dbConfig");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const { authenticate } = require("../auth/authenticate");
 
@@ -31,7 +31,7 @@ async function register(req, res) {
       .select("id", "username")
       .where({ id })
       .first();
-    
+
     const token = generateToken(newUser);
 
     res.status(201).json(newUser, token);
@@ -57,7 +57,7 @@ async function login(req, res) {
       .first();
     if (user && bcrypt.compareSync(password, user.password)) {
       const token = generateToken(user);
-      res.status(200).json({ message: `Successfully logged in`, token})
+      res.status(200).json({ message: `Successfully logged in`, token });
     } else {
       res.status(401).json({
         message: `Username or password incorrect. Please try again.`
@@ -67,8 +67,8 @@ async function login(req, res) {
     res.status(500).json({
       error: `Error while logging in: ${error}`
     });
-  };
-};
+  }
+}
 
 function getJokes(req, res) {
   const requestOptions = {
@@ -85,18 +85,19 @@ function getJokes(req, res) {
     });
 }
 
-function generateToken({user}) {
+function generateToken(user) {
   const payload = {
     subject: user.id,
     username: user.username
   };
 
-  const secret = process.env.JWT_SECRET ||
-  'add a .env file to root of project with the JWT_SECRET variable';
+  const secret =
+    process.env.JWT_SECRET ||
+    "add a .env file to root of project with the JWT_SECRET variable";
 
   const options = {
-    expiresIn = '30m'
+    expiresIn: "30m"
   };
 
-  return jwt.sign(payload, secret, options)
-};
+  return jwt.sign(payload, secret, options);
+}
